@@ -1,15 +1,21 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 
-public class NamesList {
+public class NamesList
+{
 
     private ArrayList<String> names;
 
-    public NamesList() {
+    public NamesList()
+    {
         names = new ArrayList<>();
     }
 
-    public void startUserInterface() {
+    public void startUserInterface()
+    {
         System.out.println("""
                 Welcome to the NamesList - enterprise edition.
                 ----------------------------------------------
@@ -17,10 +23,12 @@ public class NamesList {
 
         Scanner sc = new Scanner(System.in);
         int choice = 99;
-        while( choice != 0) {
+        while( choice != 0)
+        {
             showMenu();
             choice = sc.nextInt();
-            switch (choice) {
+            switch (choice)
+            {
                 case 1 -> displayListOfNames();
                 case 2 -> loadListOfNames();
                 case 3 -> saveListOfNames();
@@ -32,7 +40,8 @@ public class NamesList {
         }
     }
 
-    private void showMenu() {
+    private void showMenu()
+    {
         System.out.println("""
                 1) Display list of names
                 2) Load list of names (not implemented)
@@ -42,7 +51,8 @@ public class NamesList {
                 """);
     }
 
-    private void enterNames() {
+    private void enterNames()
+    {
         System.out.println("""
                 Enter names
                 -----------
@@ -50,9 +60,11 @@ public class NamesList {
                 """);
         Scanner sc = new Scanner(System.in);
         String name = "-nothing yet-";
-        while(!name.isBlank() && sc.hasNextLine()) {
+        while(!name.isBlank() && sc.hasNextLine())
+        {
             name = sc.nextLine();
-            if(!name.isBlank()) {
+            if(!name.isBlank())
+            {
                 names.add(name);
                 System.out.println(name + " added to the list, enter another, or empty to quit");
             }
@@ -60,30 +72,73 @@ public class NamesList {
         System.out.println("Done");
     }
 
-    private void saveListOfNames() {
-        // TODO: Implement save of the names list to a file
-        System.out.println("NOT IMPLEMENTED");
+    private void saveListOfNames()
+    {
+        try
+        {
+            PrintStream output = new PrintStream(new File("names.txt"));
+
+            for (String name : names)
+            {
+                output.println(name);
+            }
+
+            output.close();
+            System.out.println("Navne gemt i filen.");
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("Kunne ikke oprette filen: " + e.getMessage());
+        }
     }
 
-    private void loadListOfNames() {
-        // TODO: Implement load of the names list from a file
-        System.out.println("NOT IMPLEMENTED");
+    private void loadListOfNames()
+    {
+        try
+        {
+            File file = new File("names.txt");
+            Scanner fileScanner = new Scanner(file);
+
+            names.clear();
+
+            while (fileScanner.hasNextLine())
+            {
+                String name = fileScanner.nextLine();
+                if (!name.isBlank())
+                {
+                    names.add(name);
+                }
+            }
+
+            fileScanner.close();
+            System.out.println("Navne indlæst fra filen.");
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("Kunne ikke finde filen: " + e.getMessage());
+        }
     }
 
-    private void displayListOfNames() {
-        for(String name : names) {
+    private void displayListOfNames()
+    {
+        for(String name : names)
+        {
             System.out.println(name);
         }
+
         String isAre = "are";
         String s = "s";
-        if(names.size() == 1) {
+
+        if(names.size() == 1)
+        {
             isAre = "is";
             s = "";
         }
         System.out.println("There " + isAre + " " + names.size() + " name"+s+" in the system");
     }
 
-    private void exit() {
+    private void exit()
+    {
         System.out.println("""
                 ...
                 Thank you for using NamesList - enterprise edition.
@@ -92,7 +147,8 @@ public class NamesList {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         NamesList app = new NamesList();
         app.startUserInterface();
     }
